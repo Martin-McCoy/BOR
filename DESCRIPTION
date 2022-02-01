@@ -1,14 +1,15 @@
 Package: BORdata
 Title: Bureau of Reclamation Data
 Version: 0.0.0.9000
-Authors@R: 
-    person("Stephen", "Holsenbeck", , "stephe@virgalabs.io", role = c("aut", "cre"))
-Description: A package for fetching data on Bureau of Reclamation Projects https://www.usbr.gov/projects/index.php
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: person("Stephen", "Holsenbeck", , "stephe@virgalabs.io", role = c("aut",
+         "cre"))
+Description: A package for fetching data on Bureau of Reclamation Projects
+         https://www.usbr.gov/projects/index.php
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Depends: 
-    R (>= 2.10)
+Depends: R (>= 2.10)
 LazyData: true
+Imports: curl, dplyr, glue, httr, purrr, rlang, rvest, UU, xml2
+Remotes: yogat3ch/UU

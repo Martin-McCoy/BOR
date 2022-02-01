@@ -4,7 +4,7 @@ index_htm <- function() {
   if (curl::has_internet()) {
     out <- xml2::read_html(.base_url)
   } else {
-    p_dir <- system.file(package = "dam")
+    p_dir <- system.file(package = "BORdata")
     e <- new.env()
     if (nzchar(p_dir)) {
       data("index_htm.rda", envir = e)
@@ -12,9 +12,9 @@ index_htm <- function() {
       load(file.path("data","index_htm.rda"), envir = e)
     out <- e$index_htm
   }
-  rlang::env_binding_unlock(rlang::ns_env("dam"))
-  assignInNamespace(".index_htm", out, "dam")
-  rlang::env_binding_lock(rlang::ns_env("dam"))
+  rlang::env_binding_unlock(rlang::ns_env("BORdata"))
+  assignInNamespace(".index_htm", out, "BORdata")
+  rlang::env_binding_lock(rlang::ns_env("BORdata"))
 }
 
 index_htm()

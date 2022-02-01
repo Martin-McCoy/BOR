@@ -1,22 +1,11 @@
 .index_htm <- NULL
 .base_url <- "https://www.usbr.gov/projects/index.php"
 index_htm <- function() {
-  p_dir <- system.file(package = "BORdata")
-  e <- new.env()
-  if (nzchar(p_dir)) {
-    fp <- system.file(package = "BORdata", "index_htm.rda")
-    data("index_htm", envir = e)
-  } else {
-    fp <- file.path("data","index_htm.rda")
-    load(fp, envir = e)
-  }
-  out <- e$index_htm
-  if (Sys.info()["nodename"] == "Stephens-MacBook-Pro.local" && basename(dirname(getwd())) == "VirgaLabs" && curl::has_internet() && file.info(file.path("data","index_htm.rda"))$mtime < (Sys.time() - 7776000)) { # check quarterly
-    out <- index_htm <- xml2::read_html(.base_url)
-    save(index_htm, file = fp)
-  }
+  if (!curl::has_internet())
+    rlang::abort("This function needs an active internet connection to function.")
+  index_htm <- xml2::read_html(.base_url)
   rlang::env_binding_unlock(rlang::ns_env("BORdata"))
-  assignInNamespace(".index_htm", out, "BORdata")
+  assignInNamespace(".index_htm", index_htm, "BORdata")
   rlang::env_binding_lock(rlang::ns_env("BORdata"))
 }
 

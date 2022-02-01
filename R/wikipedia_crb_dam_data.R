@@ -1,3 +1,7 @@
+#' Update the local version of the tables found at \href{list of dams in the colorado river system}{https://en.wikipedia.org/wiki/List_of_dams_in_the_Colorado_River_system}
+#'
+#' @param .url \code{(chr)} The wikipedia url
+
 update_crb_dams <- function(.url = "https://en.wikipedia.org/wiki/List_of_dams_in_the_Colorado_River_system") {
   if (curl::has_internet()) {
     crb_dams <- xml2::read_html(.url) |>
@@ -13,6 +17,16 @@ update_crb_dams <- function(.url = "https://en.wikipedia.org/wiki/List_of_dams_i
 
 }
 
+#' Look up reservoir or dam
+#'
+#' @param dam \code{(chr)} Name of dam
+#' @param reservoir \code{(chr)} Name of reservoir
+#'
+#' @return \code{(tbl)}
+#' @export
+#'
+#' @examples
+#' crb_dam_reservoir("Blue Mesa")
 crb_dam_reservoir <- function(dam = NULL, reservoir = NULL) {
   value <- c(dam = dam, reservoir = reservoir)
   val <-  switch(names(value), dam = "Name", reservoir = "Reservoir",  rlang::abort("Must supply either `dam` or `reservoir`"))

@@ -1,16 +1,19 @@
 .index_htm <- NULL
 .base_url <- "https://www.usbr.gov/projects/index.php"
 index_htm <- function() {
-  if (curl::has_internet()) {
-    out <- xml2::read_html(.base_url)
+  p_dir <- system.file(package = "BORdata")
+  e <- new.env()
+  if (nzchar(p_dir)) {
+    fp <- system.file(package = "BORdata", "index_htm.rda")
+    data("index_htm", envir = e)
   } else {
-    p_dir <- system.file(package = "BORdata")
-    e <- new.env()
-    if (nzchar(p_dir)) {
-      data("index_htm.rda", envir = e)
-    } else
-      load(file.path("data","index_htm.rda"), envir = e)
-    out <- e$index_htm
+    fp <- file.path("data","index_htm.rda")
+    load(fp, envir = e)
+  }
+  out <- e$index_htm
+  if (Sys.info()["nodename"] == "Stephens-MacBook-Pro.local" && basename(dirname(getwd())) == "VirgaLabs" && curl::has_internet() && file.info(file.path("data","index_htm.rda"))$mtime < (Sys.time() - 7776000)) { # check quarterly
+    out <- index_htm <- xml2::read_html(.base_url)
+    save(index_htm, file = fp)
   }
   rlang::env_binding_unlock(rlang::ns_env("BORdata"))
   assignInNamespace(".index_htm", out, "BORdata")
@@ -18,6 +21,9 @@ index_htm <- function() {
 }
 
 index_htm()
+
+#' All available dams for lookup
+#' @return \code{(chr)} of all dam names
 
 dam_options <- function() rvest::html_elements(.index_htm, xpath = '//option[contains(text(), "Select a dam")]/following-sibling::option') |> rvest::html_text()
 
@@ -32,6 +38,20 @@ dam_select <- function(dam) {
   out
 }
 
+#' Get details on a dam
+#' @description See `dam_options` for available dams
+#' @param dam \code{(chr)} Name of the dam to lookup
+#'
+#' @return \code{(list)} of tables
+#' \itemize{
+#'   \item{\code{General}}
+#'   \item{\code{Dimensions}}
+#'   \item{\code{Hydraulics & Hydrology}}
+#' }
+#' @export
+#'
+#' @examples
+#' dam_tables("Blue Mesa")
 dam_tables <- function(dam) {
   if (missing(dam))
     .txt <- "Select a dam"

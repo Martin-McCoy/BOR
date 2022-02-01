@@ -3,10 +3,15 @@
 index_htm <- function() {
   if (!curl::has_internet())
     rlang::abort("This function needs an active internet connection to function.")
-  index_htm <- xml2::read_html(.base_url)
-  rlang::env_binding_unlock(rlang::ns_env("BORdata"))
-  assignInNamespace(".index_htm", index_htm, "BORdata")
-  rlang::env_binding_lock(rlang::ns_env("BORdata"))
+  if (is.null(get0(".index_htm", envir = rlang::ns_env("BORdata")))) {
+    index_htm <- xml2::read_html(.base_url)
+    rlang::env_binding_unlock(rlang::ns_env("BORdata"))
+    assignInNamespace(".index_htm", index_htm, "BORdata")
+    rlang::env_binding_lock(rlang::ns_env("BORdata"))
+  } else {
+    index_htm <- .index_htm
+  }
+  index_htm
 }
 
 index_htm()
@@ -14,7 +19,7 @@ index_htm()
 #' All available dams for lookup
 #' @return \code{(chr)} of all dam names
 
-dam_options <- function() rvest::html_elements(.index_htm, xpath = '//option[contains(text(), "Select a dam")]/following-sibling::option') |> rvest::html_text()
+dam_options <- function() rvest::html_elements(index_htm(), xpath = '//option[contains(text(), "Select a dam")]/following-sibling::option') |> rvest::html_text()
 
 dam_select <- function(dam) {
   out <- dam_options()[agrep(dam, dam_options(), ignore.case = TRUE)]
@@ -46,7 +51,7 @@ dam_tables <- function(dam) {
     .txt <- "Select a dam"
   else
     .txt <- dam_select(dam)
-  href <- rvest::html_element(.index_htm, xpath = glue::glue('//option[contains(text(), "{.txt}")]')) |>
+  href <- rvest::html_element(index_htm(), xpath = glue::glue('//option[contains(text(), "{.txt}")]')) |>
     rvest::html_attr("value")
   if (curl::has_internet()) {
     .h <- xml2::read_html(httr::modify_url(.base_url, path = href))

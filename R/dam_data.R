@@ -1,20 +1,11 @@
-.index_htm <- NULL
+
 .base_url <- "https://www.usbr.gov/projects/index.php"
 index_htm <- function() {
   if (!curl::has_internet())
     rlang::abort("This function needs an active internet connection to function.")
-  if (is.null(get0(".index_htm", envir = rlang::ns_env("BORdata")))) {
-    index_htm <- xml2::read_html(.base_url)
-    rlang::env_binding_unlock(rlang::ns_env("BORdata"))
-    assignInNamespace(".index_htm", index_htm, "BORdata")
-    rlang::env_binding_lock(rlang::ns_env("BORdata"))
-  } else {
-    index_htm <- .index_htm
-  }
-  index_htm
+  xml2::read_html(.base_url)
 }
 
-index_htm()
 
 #' All available dams for lookup
 #' @return \code{(chr)} of all dam names

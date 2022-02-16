@@ -15,7 +15,7 @@ crb_dam_reservoir(dam = NULL, reservoir = NULL)
 \code{(tbl)}
 }
 \description{
-Look up reservoir or dam
+If no dam or reservoir supplied, the full table of options is returned
 }
 \examples{
 crb_dam_reservoir("Blue Mesa")

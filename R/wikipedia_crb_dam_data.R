@@ -21,7 +21,7 @@ update_crb_dams <- function(.url = "https://en.wikipedia.org/wiki/List_of_dams_i
 }
 
 #' Look up reservoir or dam
-#'
+#' @description If no dam or reservoir supplied, the full table of options is returned
 #' @param dam \code{(chr)} Name of dam
 #' @param reservoir \code{(chr)} Name of reservoir
 #'
@@ -31,11 +31,15 @@ update_crb_dams <- function(.url = "https://en.wikipedia.org/wiki/List_of_dams_i
 #' @examples
 #' crb_dam_reservoir("Blue Mesa")
 crb_dam_reservoir <- function(dam = NULL, reservoir = NULL) {
-  value <- c(dam = dam, reservoir = reservoir)
-  val <-  switch(names(value), dam = "Name", reservoir = "Reservoir",  rlang::abort("Must supply either `dam` or `reservoir`"))
-  var <- rlang::sym(val)
-  dplyr::filter(crb_dams_full, agrepl(!!rlang::sym(names(value)), !!var, ignore.case = TRUE)) |>
-    dplyr::select(Name, Reservoir, dplyr::everything())
+  if (!is.null(dam) || !is.null(reservoir)) {
+    value <- c(dam = dam, reservoir = reservoir)
+    val <-  switch(names(value), dam = "Name", reservoir = "Reservoir",  rlang::abort("Must supply either `dam` or `reservoir`"))
+    var <- rlang::sym(val)
+    dplyr::filter(crb_dams_full, agrepl(!!rlang::sym(names(value)), !!var, ignore.case = TRUE)) |>
+      dplyr::select(Name, Reservoir, dplyr::everything())
+  } else {
+    crb_dams_full
+  }
 }
 
 

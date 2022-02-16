@@ -21,7 +21,7 @@ dam_select <- function(name) {
   if (!missing(name)) {
     out <- .dam_opts[agrep(name, names(.dam_opts), ignore.case = TRUE)]
     if (length(out) > 1 && interactive()) {
-      out <- out[menu(names(out))]
+      out <- out[menu(names(out), title = paste0(name, " matches:"))]
     } else if (length(out) > 1) {
       rlang::warn(paste0("Multiple matches:\n",paste0(names(out), collapse = "\n"), "\nSelected ", names(out)[1]))
       out <- out[1]
@@ -34,7 +34,7 @@ dam_select <- function(name) {
 
 #' Get details on a dam
 #' @description See `dam_select` for available dams
-#' @param dam \code{(chr)} Name of the dam to lookup
+#' @param dam \code{(chr)} Name of the dam to lookup. If not supplied, all tables will be returned
 #'
 #' @return \code{(list)} of tables
 #' \itemize{
@@ -46,16 +46,80 @@ dam_select <- function(name) {
 #'
 #' @examples
 #' dam_tables("Blue Mesa")
-dam_tables <- function(dam) {
+dam_info <- function(dam) {
+  if (missing(dam))
+    all_dams
+  else
+    all_dams[[names(dam_select(dam))]]
+}
+
+
+#' Parse downloaded dam data rds files
+#'
+#' @return Generates _R/all_dams.R_
+dam_table_parse <- function() {
+  .files <- UU::list.files2(file.path("data", "dams"))
+  all_dams <- purrr::map(.files, readRDS)
+  # Transform Dimensions to numeric
+  all_dams <- purrr::imap(all_dams, ~{
+    if (!is.null(.x$Dimensions)) {
+      .Dimensions <- rlang::set_names(.x$Dimensions, c("Dimension", "Value")) |>
+        dplyr::mutate(Unit = trimws(stringr::str_extract(Value, "[\\s[:alpha:]\\;\\,\\(\\)\\-]+$")),
+                      Value = as.numeric(stringr::str_remove_all(stringr::str_extract(Value, "^\\s?[\\d\\,\\.]+"), "\\,")))
+      #browser(expr = anyNA(.x$Dimensions, TRUE) || .y == "Hoover Dam")
+      .x$Dimensions <- .Dimensions
+    }
+    if (!is.null(.x$General))
+      .x$General <- rlang::set_names(.x$General,c("Item", "Value"))
+    if (!is.null(.x$`Hydraulics & Hydrology`))
+      .x$`Hydraulics & Hydrology` <- rlang::set_names(.x$`Hydraulics & Hydrology`,c("Metric", "Value"))
+
+    .x
+  })
+  dump("all_dams", "R/all_dams.R")
+}
+
+#' Update info rds for all dams
+#'
+#' @param dams \code{(chr)} named character of url paths
+#'
+#' @return All saved rds files in _data/dams_ and an updated _R/all_dams.R_
+dam_table_update <- function(dams = dam_select()) {
   net_check()
-  .path <- dam_select(dam)
-  .h <- xml2::read_html(httr::modify_url(.base_url, path = .path))
-  out <- purrr::map(rlang::set_names(c("General", "Dimensions", "Hydraulics & Hydrology")), ~{
-    el <- rvest::html_elements(.h, xpath = glue::glue("//h4[contains(text(), '{.x}')]/following-sibling::table[1]"))
-    if (UU::is_legit(el))
-      out <- rvest::html_table(el)[[1]]
-    else
-      out <- NULL
-  }) |> purrr::compact()
-  out
+  i <- 1
+  .pb <- cli::cli_progress_bar(name = "Dam: ", type = "tasks", total = length(dams), format = "{cli::pb_bar} {pb::status} {cli::pb_current}/{cli::pb_total} {cli::pb_percent}")
+  while (i <= length(dams)) {
+    cli::cli_progress_update(id = .pb, status = names(dams)[i], set = i)
+    out <- dam_fetch(dams[i])
+    if (!UU::is_error(out)) {
+      if (!is.null(out)) {
+        saveRDS(out, file.path("data", "dams", paste0(names(dams)[i], ".rds")))
+      }
+      i <- i + 1
+    }
+    Sys.sleep(1)
+  }
+  dam_table_parse()
+}
+
+#' Fetches dam data from BOR website
+#'
+#' @param path \code{(chr)} path to dam info page
+#'
+#' @return General, Dimensions, Hydraulics & Hydrology tables
+
+dam_fetch <- function(path) {
+  try({
+    .url <- httr::modify_url(.base_url, path = path)
+    .url = url(.url, "rb")
+    .h <- xml2::read_html(.url)
+    close(.url)
+     purrr::map(rlang::set_names(c("General", "Dimensions", "Hydraulics & Hydrology")), ~{
+      el <- rvest::html_elements(.h, xpath = glue::glue("//h4[contains(text(), '{.x}')]/following-sibling::table[1]"))
+      if (UU::is_legit(el))
+        out <- rvest::html_table(el)[[1]]
+      else
+        out <- NULL
+    }) |> purrr::compact()
+  })
 }

@@ -53,6 +53,18 @@ dam_info <- function(dam) {
     all_dams[[names(dam_select(dam))]]
 }
 
+#' Retrieve dam Dimensions from a Dam Table
+#'
+#' @param dam_table \code{(tbl)} from which to pull the metrics
+#' @param dim_regex \code{(chr)} regex on which to match the dimension name
+#' @inheritParams stringr::regex
+#'
+#' @return \code{(named vector)}
+#' @export
+dam_dim <- function(dam_table, dim_regex, ignore_case = TRUE) {
+  dplyr::filter(dam_table, stringr::str_detect(!!rlang::sym(names(dam_table)[1]), stringr::regex(UU::regex_or(dim_regex), ignore_case = ignore_case))) |>
+    {\(x) {rlang::set_names(dplyr::pull(x, Value), dplyr::pull(x, !!rlang::sym(names(dam_table)[1])))}}()
+}
 
 #' Parse downloaded dam data rds files
 #'

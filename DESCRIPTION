@@ -1,4 +1,4 @@
-Package: BORdata
+Package: BOR
 Title: Bureau of Reclamation Data
 Version: 0.0.0.9000
 Authors@R: person("Stephen", "Holsenbeck", , "stephe@virgalabs.io", role = c("aut",

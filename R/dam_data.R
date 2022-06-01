@@ -18,6 +18,9 @@ update_dam_options <- function() {
 #' @param name \code{(chr)} of the dam. **Optional** leave blank to return all options
 #' @return \code{(named chr)} with the url named according to the dam
 dam_select <- function(name) {
+  if (tibble::is_tibble(name))
+    name <- name$Name
+
   if (!missing(name)) {
     out <- .dam_opts[agrep(name, names(.dam_opts), ignore.case = TRUE)]
     if (length(out) > 1 && interactive()) {

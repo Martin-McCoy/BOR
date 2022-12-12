@@ -2,5 +2,6 @@
 
 export(crb_dam_reservoir)
 export(dam_dim)
+export(dam_groupings)
 export(dam_info)
 export(mead_powell_slider_defaults)

@@ -1,6 +1,6 @@
 Package: BOR
 Title: Bureau of Reclamation Data
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: person("Stephen", "Holsenbeck", , "stephe@virgalabs.io", role = c("aut",
          "cre"))
 Description: A package for fetching data on Bureau of Reclamation Projects

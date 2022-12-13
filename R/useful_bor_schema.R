@@ -23,6 +23,7 @@ dam_groupings <- list(
     `Wayne N. Aspinall Unit` = paste(c("Blue Mesa", "Crystal", "Morrow Point"), "Dam"),
     `Flaming Gorge Unit` = "Flaming Gorge Dam",
     `Navajo Unit` = "Navajo Dam",
+    `Seedskadee Project` = "Fontenelle Dam",
     `Glen Canyon Unit` = "Glen Canyon Dam"
   ),
   Hoover = "Hoover Dam",

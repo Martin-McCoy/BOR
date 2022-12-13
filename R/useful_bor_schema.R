@@ -16,6 +16,7 @@ mead_powell_slider_defaults <-
   )
 
 #' Groupings of Dams in the CRB
+#' @description These groupings are derived from this \href{https://www.usbr.gov/uc/rm/crsp/index.html}{link}
 #' @export
 dam_groupings <- list(
   CRSP = list(

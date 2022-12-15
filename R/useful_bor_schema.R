@@ -3,7 +3,7 @@
 mead_powell_slider_defaults <-
   structure(
     list(
-      label = c("Powell Pool Elevation", "Mead Pool Elevation"),
+      label = c("Powell Elevation", "Mead Elevation"),
       min = c(3400, 975),
       max = c(3600, 1100),
       value = c(3525,

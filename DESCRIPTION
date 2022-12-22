@@ -11,6 +11,17 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Depends: R (>= 2.10)
 LazyData: true
-Imports: cli, curl, dplyr, glue, httr, purrr, rlang, UU
+Imports: 
+    cli,
+    curl,
+    dplyr,
+    glue,
+    httr,
+    purrr,
+    rlang,
+    UU,
+    virgaUtils (>= 0.4.0)
 Suggests: rvest, xml2
-Remotes: yogat3ch/UU
+Remotes:  
+    yogat3ch/UU,
+    Martin-McCoy/virgaUtils

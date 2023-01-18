@@ -34,7 +34,7 @@ get_res_data = function(reservoir_num,
     readr::read_csv()
 
   # filtering by date
-  if (date) {
+  if (!is.null(date)) {
     filtered_data = raw_data |>
       dplyr::filter(datetime == date)
 

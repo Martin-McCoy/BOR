@@ -17,6 +17,7 @@ Imports:
     dplyr,
     glue,
     httr,
+    httr2,
     purrr,
     rlang,
     UU,

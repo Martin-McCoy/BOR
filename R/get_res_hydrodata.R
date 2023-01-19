@@ -45,7 +45,7 @@ get_res_data = function(reservoir_num,
 
   if (most_recent == TRUE) {
 
-    filtered_data = tail(raw_data, n = 1)
+    filtered_data = utils::tail(raw_data, n = 1)
 
     return(filtered_Data)
 

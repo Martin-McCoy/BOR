@@ -6,3 +6,6 @@
 data
 inst/vault
 .Renviron
+inst/doc
+/doc/
+/Meta/

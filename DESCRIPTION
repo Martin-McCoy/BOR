@@ -8,7 +8,7 @@ Description: A package for fetching data on Bureau of Reclamation Projects
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: R (>= 2.10)
 LazyData: true
 Imports: 
@@ -17,11 +17,17 @@ Imports:
     dplyr,
     glue,
     httr,
+    httr2,
     purrr,
     rlang,
     UU,
     virgaUtils (>= 0.4.0)
-Suggests: rvest, xml2
+Suggests: 
+    knitr,
+    rmarkdown,
+    rvest,
+    xml2
 Remotes: 
     yogat3ch/UU,
     Martin-McCoy/virgaUtils
+VignetteBuilder: knitr

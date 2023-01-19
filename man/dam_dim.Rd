@@ -11,7 +11,9 @@ dam_dim(dam_table, dim_regex, ignore_case = TRUE, vec = FALSE)
 
 \item{dim_regex}{\code{(chr)} regex on which to match the dimension name}
 
-\item{ignore_case}{Should case differences be ignored in the match?}
+\item{ignore_case}{Should case differences be ignored in the match?
+For \code{fixed()}, this uses a simple algorithm which assumes a
+one-to-one mapping between upper and lower case letters.}
 
 \item{vec}{\code{(chr)} whether to return a vector \code{TRUE} or the filtered \code{tbl}}
 }

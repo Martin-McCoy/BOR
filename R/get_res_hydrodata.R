@@ -17,7 +17,8 @@
 #' get_res_data(919, 49) # get Powell Elevation
 get_res_data = function(reservoir_num,
                         data_type_num,
-                        date = NULL) {
+                        date = NULL,
+                        most_recent = FALSE) {
 
   # generate url
   url = glue::glue('https://www.usbr.gov/uc/water/hydrodata/reservoir_data/{reservoir_num}/csv/{data_type_num}.csv')
@@ -39,6 +40,14 @@ get_res_data = function(reservoir_num,
       dplyr::filter(datetime == date)
 
     return(filtered_data)
+
+  }
+
+  if (most_recent == TRUE) {
+
+    filtered_data = tail(raw_data, n = 1)
+
+    return(filtered_Data)
 
   } else {
 

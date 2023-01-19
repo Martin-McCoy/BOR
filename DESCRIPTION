@@ -22,7 +22,12 @@ Imports:
     rlang,
     UU,
     virgaUtils (>= 0.4.0)
-Suggests: rvest, xml2
+Suggests: 
+    knitr,
+    rmarkdown,
+    rvest,
+    xml2
 Remotes: 
     yogat3ch/UU,
     Martin-McCoy/virgaUtils
+VignetteBuilder: knitr
